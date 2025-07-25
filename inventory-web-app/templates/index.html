@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head><title>Inventory Dashboard</title></head>
+<body>
+<h1>Inventory Management System</h1>
+<a href="{{ url_for('add_product') }}">Add Product</a> | <a href="{{ url_for('sales_report') }}">Sales Report</a>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul>
+    {% for category, message in messages %}
+      <li><strong>{{ category.title() }}:</strong> {{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<table border="1" cellpadding="5">
+<tr><th>ID</th><th>Name</th><th>Price</th><th>Quantity</th><th>Actions</th></tr>
+{% for pid, info in inventory.items() %}
+<tr>
+  <td>{{ pid }}</td>
+  <td>{{ info.name }}</td>
+  <td>₹{{ info.price }}</td>
+  <td>{{ info.quantity }}</td>
+  <td>
+    <form action="{{ url_for('sell_product', product_id=pid) }}" method="post" style="display:inline;">
+      <input type="number" name="quantity" min="1" placeholder="Sell Qty" required>
+      <button type="submit">Sell</button>
+    </form>
+    <form action="{{ url_for('restock_product', product_id=pid) }}" method="post" style="display:inline;">
+      <input type="number" name="quantity" min="1" placeholder="Restock Qty" required>
+      <button type="submit">Restock</button>
+    </form>
+  </td>
+</tr>
+{% endfor %}
+</table>
+</body>
+</html>
